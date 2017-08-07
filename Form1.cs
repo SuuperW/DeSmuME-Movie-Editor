@@ -74,6 +74,21 @@ namespace DeSmuMe_Movie_Editor
             rdoVerHD.Visible = false;
             rdoVer9.Visible = false;
             btnLoadMovie.Text = "Refind";
+
+            // Check for autosaved movie
+            if (File.Exists(GetAutoSaveMoviePath()))
+            {
+                if (MessageBox.Show("The last movie was not saved. Do you wish to load the auto-saved version?", "Load auto-save?", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+                {
+                    byte[] data = File.ReadAllBytes(GetAutoSaveMoviePath());
+                    mov.reRecords = BitConverter.ToInt32(data, 0);
+                    byte[] inputData = new byte[data.Length - 4];
+                    Array.Copy(data, 4, inputData, 0, inputData.Length);
+
+                    mov.deleteFrames(0, mov.MovieLength - 1);
+                    mov.UsePSave(inputData, 0, true);
+                }
+            }
         }
         // Change view frame
         private void numViewFrame_ValueChanged(object sender, EventArgs e)
@@ -358,9 +373,7 @@ namespace DeSmuMe_Movie_Editor
             fileStream.Close();
 
             // Delete the autosaved movie
-            DirectoryInfo saveDirectory = new DirectoryInfo(Application.ExecutablePath).Parent;
-            saveDirectory = saveDirectory.CreateSubdirectory("autosaves");
-            File.Delete(saveDirectory.FullName + "\\movie");
+            File.Delete(GetAutoSaveMoviePath());
 
             MessageBox.Show("Saved!");
         }
@@ -370,11 +383,18 @@ namespace DeSmuMe_Movie_Editor
             if (shouldAutoSave)
             {
                 shouldAutoSave = false;
-                string saveStr = mov.reRecords.ToString() + '\n' + mov.GenerateSaveString();
-                DirectoryInfo saveDirectory = new DirectoryInfo(Application.ExecutablePath).Parent;
-                saveDirectory = saveDirectory.CreateSubdirectory("autosaves");
-                File.WriteAllText(saveDirectory.FullName + "\\movie", saveStr);
+                byte[] inputBytes = mov.GetPSave(0, mov.MovieLength);
+                byte[] saveBytes = new byte[inputBytes.Length + 4];
+                BitConverter.GetBytes(mov.reRecords).CopyTo(saveBytes, 0);
+                inputBytes.CopyTo(saveBytes, 4);
+                File.WriteAllBytes(GetAutoSaveMoviePath(), saveBytes);
             }
+        }
+        private string GetAutoSaveMoviePath()
+        {
+            DirectoryInfo saveDirectory = new DirectoryInfo(Application.ExecutablePath).Parent;
+            saveDirectory = saveDirectory.CreateSubdirectory("autosaves");
+            return saveDirectory.FullName + "\\movie";
         }
 
         // What button!?
