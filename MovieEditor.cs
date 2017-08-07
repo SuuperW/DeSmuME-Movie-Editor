@@ -74,7 +74,6 @@ namespace DeSmuMe_Movie_Editor
 		public int reRecords = 0;
 		private int closestEdit = int.MaxValue;
 		private bool rrCounted = false;
-		private int lastSSFrame;
 		private int desyncFrame = int.MaxValue;
 		private void FrameWatch()
 		{
@@ -93,21 +92,15 @@ namespace DeSmuMe_Movie_Editor
 					if (rrCounted)
 						closestEdit = int.MaxValue;
 					rrCounted = false;
-					if (CurrentFrame - SSFrames <= desyncFrame)
+					if (CurrentFrame <= desyncFrame)
 						DesyncDetected(-1);
 				}
 
 				lastFrame = CurrentFrame;
-				lastSSFrame = lastFrame - SSFrames;
 				System.Threading.Thread.Sleep(2);
 			} while (!disposedValue);
 		}
 		#endregion
-		private int _SSFramePtr = 0x5F206B4;
-		private int SSFrames
-		{
-			get { return ReadInteger(_SSFramePtr + (int)Mem.TargetProcess.MainModule.BaseAddress); }
-		}
 		#region "Events"
 		public delegate void EvDel(int f);
 		public delegate void EvDel2(int f, int c = 1);
@@ -274,24 +267,6 @@ namespace DeSmuMe_Movie_Editor
 		{
 			byte[] b = BitConverter.GetBytes(value);
 			Mem.WriteMemory((IntPtr)address, b);
-		}
-
-		// Temp save and load
-		public void TempSave(string path, int start, int end)
-		{
-			byte[] sBytes = GetPSave(start, end);
-
-			System.IO.File.WriteAllBytes(path, sBytes);
-		}
-		public void TempSave(string path, byte[] sBytes)
-		{
-			System.IO.File.WriteAllBytes(path, sBytes);
-		}
-		public void TempLoad(string path, int start, bool replace = false)
-		{
-			byte[] sBytes = System.IO.File.ReadAllBytes(path);
-
-			UsePSave(sBytes, start, replace);
 		}
 
 		public string GenerateSaveString()
