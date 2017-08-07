@@ -312,6 +312,9 @@ namespace DeSmuMe_Movie_Editor
 		}
 		public int UsePSave(byte[] sBytes, int start, bool replace = false)
 		{
+            string notEnoughMemoryAllocated = "DeSmuMe has not allocated enough memory for this operation!\nMaximum movie length: " + MaxMovieLength +
+                        "\n\nPlease save the movie (and possibly manually add frames), then re-load it in DeSmuMe.";
+
 			// Load data into a new byte array
 			int cFrame = 0;
 			byte[] lBytes = new byte[12 * BitConverter.ToInt32(sBytes, 0)];
@@ -332,8 +335,7 @@ namespace DeSmuMe_Movie_Editor
 			{
 				if (MovieLength + cFrame >= MaxMovieLength)
 				{
-					MessageBox.Show("DeSmuMe has not allocated enough memory for this operation!\nMaximum movie length: " + MaxMovieLength +
-						"\n\nPlease save the movie and re-load it in DeSmuMe.");
+					MessageBox.Show(notEnoughMemoryAllocated);
 					return 1;
 				}
 				// Increase length of movie
@@ -343,8 +345,7 @@ namespace DeSmuMe_Movie_Editor
 			}
 			else if (start + cFrame > MaxMovieLength)
 			{
-				MessageBox.Show("DeSmuMe has not allocated enough memory for this operation!\nMaximum movie length: " + MaxMovieLength +
-					"\n\nPlease save the movie and re-load it in DeSmuMe.");
+				MessageBox.Show(notEnoughMemoryAllocated);
 				return 1;
 			}
 			// Copy the new byte array to the movie
