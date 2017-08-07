@@ -85,8 +85,13 @@ namespace DeSmuMe_Movie_Editor
                     byte[] inputData = new byte[data.Length - 4];
                     Array.Copy(data, 4, inputData, 0, inputData.Length);
 
+                    string loadingStr = "Loading autosave...";
+                    lblDesync.Text = loadingStr;
+                    Refresh();
                     mov.deleteFrames(0, mov.MovieLength - 1);
                     mov.UsePSave(inputData, 0, true);
+                    if (lblDesync.Text == loadingStr)
+                        lblDesync.Text = "";
                 }
             }
         }
