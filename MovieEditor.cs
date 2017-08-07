@@ -29,7 +29,7 @@ namespace DeSmuMe_Movie_Editor
                 _cfPtr = 0x4CF35FC;
 				if (emus.Length == 0)
 				{
-					MessageBox.Show("Could not find DeSmuME_0.9.11_x86. Please open the program, start a movie, and try again.");
+                    MessageBox.Show("Could not find DeSmuME_X432R_AVI_x86. Please open the program, start a movie, and try again.");
 					return 1;
 				}
 			}
