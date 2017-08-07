@@ -41,12 +41,16 @@ namespace DeSmuMe_Movie_Editor
         {
             // Get the movie!
             mov = new MovieEditor();
-            mov.DesyncDetected += DesyncDetect;
-            mov.RerecordIncremented += RerecordInc;
             if (mov.GetMovie(rdoVer9.Checked ? 9 : 432, (int)numInst.Value - 1) != 0)
                 return;
 
-            Process test = new Process();
+            mov.DesyncDetected += DesyncDetect;
+            mov.RerecordIncremented += RerecordInc;
+            mov.FrameEdited += (f, c) => { shouldAutoSave = true; };
+            Timer autoSaver = new Timer();
+            autoSaver.Interval = 600000; // 10 mins
+            autoSaver.Tick += (s, te) => { AutoSave(); };
+            autoSaver.Start();
 
             // Enable interface.
             numViewFrame.Enabled = true;
@@ -353,7 +357,24 @@ namespace DeSmuMe_Movie_Editor
             fileWriter.Flush();
             fileStream.Close();
 
+            // Delete the autosaved movie
+            DirectoryInfo saveDirectory = new DirectoryInfo(Application.ExecutablePath).Parent;
+            saveDirectory = saveDirectory.CreateSubdirectory("autosaves");
+            File.Delete(saveDirectory.FullName + "\\movie");
+
             MessageBox.Show("Saved!");
+        }
+        private bool shouldAutoSave = false;
+        private void AutoSave()
+        {
+            if (shouldAutoSave)
+            {
+                shouldAutoSave = false;
+                string saveStr = mov.reRecords.ToString() + '\n' + mov.GenerateSaveString();
+                DirectoryInfo saveDirectory = new DirectoryInfo(Application.ExecutablePath).Parent;
+                saveDirectory = saveDirectory.CreateSubdirectory("autosaves");
+                File.WriteAllText(saveDirectory.FullName + "\\movie", saveStr);
+            }
         }
 
         // What button!?
