@@ -22,7 +22,7 @@ namespace DeSmuMe_Movie_Editor
         }
 
         bool AutoChange = true;
-        MovieEditor mov;
+        MovieEditor mov = null;
 
         private FrameInput cFrame
         { get { return mov.getInput((int)numViewFrame.Value); } }
@@ -40,6 +40,13 @@ namespace DeSmuMe_Movie_Editor
         private void btnLoadMovie_Click(object sender, EventArgs e)
         {
             // Get the movie!
+            bool firstFind = true;
+            if (mov != null)
+            {
+                firstFind = false;
+                mov.Dispose();
+            }
+
             mov = new MovieEditor();
             if (mov.GetMovie(rdoVer9.Checked ? 9 : 432, (int)numInst.Value - 1) != 0)
                 return;
@@ -47,10 +54,13 @@ namespace DeSmuMe_Movie_Editor
             mov.DesyncDetected += DesyncDetect;
             mov.RerecordIncremented += RerecordInc;
             mov.FrameEdited += (f, c) => { shouldAutoSave = true; };
-            Timer autoSaver = new Timer();
-            autoSaver.Interval = 600000; // 10 mins
-            autoSaver.Tick += (s, te) => { AutoSave(); };
-            autoSaver.Start();
+            if (firstFind)
+            {
+                Timer autoSaver = new Timer();
+                autoSaver.Interval = 600000; // 10 mins
+                autoSaver.Tick += (s, te) => { AutoSave(); };
+                autoSaver.Start();
+            }
 
             // Enable interface.
             numViewFrame.Enabled = true;
@@ -76,7 +86,7 @@ namespace DeSmuMe_Movie_Editor
             btnLoadMovie.Text = "Refind";
 
             // Check for autosaved movie
-            if (File.Exists(GetAutoSaveMoviePath()))
+            if (firstFind && File.Exists(GetAutoSaveMoviePath()))
             {
                 if (MessageBox.Show("The last movie was not saved. Do you wish to load the auto-saved version?", "Load auto-save?", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
                 {
