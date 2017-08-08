@@ -59,7 +59,7 @@ namespace DeSmuMe_Movie_Editor
 			_memSPtr = MoviePointer + 0xC;
 			if (memoryStart == 0)
 			{ // If no movie is playing, complain
-				MessageBox.Show("The selected instances is not playing a movie.");
+				MessageBox.Show("The selected instance is not playing a movie.");
 				return 3;
 			}
 
