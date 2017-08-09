@@ -86,22 +86,40 @@ namespace DeSmuMe_Movie_Editor
             btnLoadMovie.Text = "Refind";
 
             // Check for autosaved movie
-            if (firstFind && File.Exists(GetAutoSaveMoviePath()))
+            if (firstFind)
             {
-                if (MessageBox.Show("The last movie was not saved. Do you wish to load the auto-saved version?", "Load auto-save?", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+                bool loadedMovie = false;
+                if (File.Exists(GetAutoSaveMoviePath()))
                 {
-                    byte[] data = File.ReadAllBytes(GetAutoSaveMoviePath());
-                    mov.reRecords = BitConverter.ToInt32(data, 0);
-                    byte[] inputData = new byte[data.Length - 4];
-                    Array.Copy(data, 4, inputData, 0, inputData.Length);
+                    if (MessageBox.Show("The last movie was not saved. Do you wish to load the auto-saved version?", "Load auto-save?", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+                    {
+                        byte[] data = File.ReadAllBytes(GetAutoSaveMoviePath());
+                        mov.reRecords = BitConverter.ToInt32(data, 0);
+                        byte[] inputData = new byte[data.Length - 4];
+                        Array.Copy(data, 4, inputData, 0, inputData.Length);
 
-                    string loadingStr = "Loading autosave...";
-                    lblDesync.Text = loadingStr;
-                    Refresh();
-                    mov.deleteFrames(0, mov.MovieLength - 1);
-                    mov.UsePSave(inputData, 0, true);
-                    if (lblDesync.Text == loadingStr)
-                        lblDesync.Text = "";
+                        string loadingStr = "Loading autosave...";
+                        lblDesync.Text = loadingStr;
+                        Refresh();
+                        mov.deleteFrames(0, mov.MovieLength - 1);
+                        mov.UsePSave(inputData, 0, true);
+                        if (lblDesync.Text == loadingStr)
+                            lblDesync.Text = "";
+                        loadedMovie = true;
+                    }
+                }
+
+                // Are there partials to load?
+                DirectoryInfo autoSaveDirectory = new DirectoryInfo(GetAutoSaveMoviePath()).Parent;
+                if (autoSaveDirectory.GetFiles().Length > 1)
+                {
+                    if (loadedMovie || MessageBox.Show("DeSmuME movie editor did not shut down properly last time. Do you wish to load the auto-saved partials?", "Load auto-save?", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+                    {
+                        Part_Editor p = new Part_Editor();
+                        p.mov = mov;
+                        p.LoadAutoSavedZones();
+                        p.Show();
+                    }
                 }
             }
         }
