@@ -471,10 +471,10 @@ namespace DeSmuMe_Movie_Editor
         }
 
         // Help?
-        private void button1_Click(object sender, EventArgs e)
+        private void helpBtn_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("DeSmuMe Movie Editor, by Suuper.\nVersion B (Feb. 2nd, 2015)\n\n" +
-                "Features to be added later:" +
+            MessageBox.Show("DeSmuMe Movie Editor, by Suuper.\nVersion C (9 Aug, 2017)\n\n" +
+             "Features to be added later:" +
              "\n-LID and mic are not currently supported." +
              "\n-Rapid-fire input is not currently supported." +
              "\n\nKnown bugs/problems:" +
@@ -482,16 +482,15 @@ namespace DeSmuMe_Movie_Editor
              "\nChanging a frame and then changing it back before playing still counts as a rerecord." +
              "\n\nIf you have any questions, problems or suggestions, let me know at SuuperW@gmail.com");
 
-            MessageBox.Show("This program's main purpose to aid in creating TAS runs. To use this program:" +
+            MessageBox.Show("This program's main purpose is to aid in creating tool-assisted speedruns. To use this program:" +
                 "\nOpen DeSmuMe and play a movie as 'Read Only'." +
                 "\nSelect your DeSmuMe version. If you have multiple open, set 'Instance' to 1 for the 1st one opened, 2 for the 2nd, etc. Then click 'Get Movie'." +
                 "\nYou can now select any frame of the movie and change it with the check boxes (for buttons) and number boxes (for touch screen)." +
                 "\nUse savestates, pause/unpause, and frame advance in DeSmuMe to watch your edited movie. No other input in DeSmuMe is required." +
                 "\n\nThe 'Partials' button will open a new window which allows you to save/load portions of a movie, and place them in the currently playing movie." +
                 "\nSet the starting point (inclusive) and ending point (exclusive) of a 'Zone' to get the input between those frames." +
-                "\nOnce created, the 'zones' in the list do NOT change. Editing the input between the star/end points you specified will not change the input in the 'zone'." +
-                "\nExample use: Save/load perfect MTs, so you don't have to manually set the input frame by frame for each one." +
-                "\nThese zones do not provide desync warnings, since [in my use] they are often used to revert changes via saving/loading the entire recording.");
+                "\nOnce created, the 'zones' in the list do NOT change. Editing the input between the start/end points you specified will not change the input in the created zone." +
+                "\nThese zones do not provide desync warnings, so be careful!");
         }
 
         private void Control_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)

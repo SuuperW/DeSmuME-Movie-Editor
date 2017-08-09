@@ -32,7 +32,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblDesync = new System.Windows.Forms.Label();
             this.lblReRecords = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.helpBtn = new System.Windows.Forms.Button();
             this.numInst = new System.Windows.Forms.NumericUpDown();
             this.rdoVerHD = new System.Windows.Forms.RadioButton();
             this.rdoVer9 = new System.Windows.Forms.RadioButton();
@@ -97,7 +97,7 @@
             // 
             this.panel1.Controls.Add(this.lblDesync);
             this.panel1.Controls.Add(this.lblReRecords);
-            this.panel1.Controls.Add(this.button1);
+            this.panel1.Controls.Add(this.helpBtn);
             this.panel1.Controls.Add(this.numInst);
             this.panel1.Controls.Add(this.rdoVerHD);
             this.panel1.Controls.Add(this.rdoVer9);
@@ -158,16 +158,16 @@
             this.lblReRecords.TabIndex = 50;
             this.lblReRecords.Text = "ReRecords:";
             // 
-            // button1
+            // helpBtn
             // 
-            this.button1.Location = new System.Drawing.Point(256, 183);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(21, 23);
-            this.button1.TabIndex = 49;
-            this.button1.Text = "?";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            this.button1.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Control_PreviewKeyDown);
+            this.helpBtn.Location = new System.Drawing.Point(256, 183);
+            this.helpBtn.Name = "helpBtn";
+            this.helpBtn.Size = new System.Drawing.Size(21, 23);
+            this.helpBtn.TabIndex = 49;
+            this.helpBtn.Text = "?";
+            this.helpBtn.UseVisualStyleBackColor = true;
+            this.helpBtn.Click += new System.EventHandler(this.helpBtn_Click);
+            this.helpBtn.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Control_PreviewKeyDown);
             // 
             // numInst
             // 
@@ -848,7 +848,7 @@
         private System.Windows.Forms.RadioButton rdoVerHD;
         private System.Windows.Forms.RadioButton rdoVer9;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button helpBtn;
         private System.Windows.Forms.Label lblReRecords;
 		private System.Windows.Forms.Label lblDesync;
     }
