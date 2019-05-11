@@ -30,12 +30,11 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.cbxVersion = new System.Windows.Forms.ComboBox();
             this.lblDesync = new System.Windows.Forms.Label();
             this.lblReRecords = new System.Windows.Forms.Label();
             this.helpBtn = new System.Windows.Forms.Button();
             this.numInst = new System.Windows.Forms.NumericUpDown();
-            this.rdoVerHD = new System.Windows.Forms.RadioButton();
-            this.rdoVer9 = new System.Windows.Forms.RadioButton();
             this.btnPartialSave = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.pnlInsertDelete = new System.Windows.Forms.Panel();
@@ -95,12 +94,11 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.cbxVersion);
             this.panel1.Controls.Add(this.lblDesync);
             this.panel1.Controls.Add(this.lblReRecords);
             this.panel1.Controls.Add(this.helpBtn);
             this.panel1.Controls.Add(this.numInst);
-            this.panel1.Controls.Add(this.rdoVerHD);
-            this.panel1.Controls.Add(this.rdoVer9);
             this.panel1.Controls.Add(this.btnPartialSave);
             this.panel1.Controls.Add(this.btnSave);
             this.panel1.Controls.Add(this.pnlInsertDelete);
@@ -138,6 +136,19 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(280, 339);
             this.panel1.TabIndex = 0;
+            // 
+            // cbxVersion
+            // 
+            this.cbxVersion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbxVersion.FormattingEnabled = true;
+            this.cbxVersion.Items.AddRange(new object[] {
+            "9",
+            "432",
+            "personal"});
+            this.cbxVersion.Location = new System.Drawing.Point(126, 313);
+            this.cbxVersion.Name = "cbxVersion";
+            this.cbxVersion.Size = new System.Drawing.Size(75, 21);
+            this.cbxVersion.TabIndex = 52;
             // 
             // lblDesync
             // 
@@ -186,31 +197,6 @@
             0,
             0,
             0});
-            // 
-            // rdoVerHD
-            // 
-            this.rdoVerHD.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.rdoVerHD.AutoSize = true;
-            this.rdoVerHD.Location = new System.Drawing.Point(115, 317);
-            this.rdoVerHD.Name = "rdoVerHD";
-            this.rdoVerHD.Size = new System.Drawing.Size(49, 17);
-            this.rdoVerHD.TabIndex = 46;
-            this.rdoVerHD.Text = "v432";
-            this.rdoVerHD.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.rdoVerHD.UseVisualStyleBackColor = true;
-            // 
-            // rdoVer9
-            // 
-            this.rdoVer9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.rdoVer9.AutoSize = true;
-            this.rdoVer9.Checked = true;
-            this.rdoVer9.Location = new System.Drawing.Point(168, 317);
-            this.rdoVer9.Name = "rdoVer9";
-            this.rdoVer9.Size = new System.Drawing.Size(46, 17);
-            this.rdoVer9.TabIndex = 46;
-            this.rdoVer9.TabStop = true;
-            this.rdoVer9.Text = "v0.9";
-            this.rdoVer9.UseVisualStyleBackColor = true;
             // 
             // btnPartialSave
             // 
@@ -469,7 +455,9 @@
             this.chkL.Text = "L";
             this.chkL.UseVisualStyleBackColor = true;
             this.chkL.CheckedChanged += new System.EventHandler(this.chkAnyButton_CheckChanged);
-            this.chkL.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_DoubleClick);
+            this.chkL.Leave += new System.EventHandler(this.chkAny_Leave);
+            this.chkL.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseDown);
+            this.chkL.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseUp);
             this.chkL.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Control_PreviewKeyDown);
             // 
             // label5
@@ -491,7 +479,7 @@
             this.lblTouch.Size = new System.Drawing.Size(78, 13);
             this.lblTouch.TabIndex = 29;
             this.lblTouch.Text = "Touch Screen:";
-            this.lblTouch.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_DoubleClick);
+            this.lblTouch.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseDown);
             // 
             // chkg
             // 
@@ -504,7 +492,9 @@
             this.chkg.Text = "g";
             this.chkg.UseVisualStyleBackColor = true;
             this.chkg.CheckedChanged += new System.EventHandler(this.chkAnyButton_CheckChanged);
-            this.chkg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_DoubleClick);
+            this.chkg.Leave += new System.EventHandler(this.chkAny_Leave);
+            this.chkg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseDown);
+            this.chkg.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseUp);
             this.chkg.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Control_PreviewKeyDown);
             // 
             // chkR
@@ -518,7 +508,9 @@
             this.chkR.Text = "R";
             this.chkR.UseVisualStyleBackColor = true;
             this.chkR.CheckedChanged += new System.EventHandler(this.chkAnyButton_CheckChanged);
-            this.chkR.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_DoubleClick);
+            this.chkR.Leave += new System.EventHandler(this.chkAny_Leave);
+            this.chkR.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseDown);
+            this.chkR.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseUp);
             this.chkR.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Control_PreviewKeyDown);
             // 
             // numTouchP
@@ -545,7 +537,9 @@
             this.chkStart.Text = "Start";
             this.chkStart.UseVisualStyleBackColor = true;
             this.chkStart.CheckedChanged += new System.EventHandler(this.chkAnyButton_CheckChanged);
-            this.chkStart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_DoubleClick);
+            this.chkStart.Leave += new System.EventHandler(this.chkAny_Leave);
+            this.chkStart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseDown);
+            this.chkStart.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseUp);
             this.chkStart.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Control_PreviewKeyDown);
             // 
             // numTouchY
@@ -572,7 +566,9 @@
             this.chkSelect.Text = "select";
             this.chkSelect.UseVisualStyleBackColor = true;
             this.chkSelect.CheckedChanged += new System.EventHandler(this.chkAnyButton_CheckChanged);
-            this.chkSelect.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_DoubleClick);
+            this.chkSelect.Leave += new System.EventHandler(this.chkAny_Leave);
+            this.chkSelect.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseDown);
+            this.chkSelect.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseUp);
             this.chkSelect.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Control_PreviewKeyDown);
             // 
             // numTouchX
@@ -599,7 +595,9 @@
             this.chkX.Text = "X";
             this.chkX.UseVisualStyleBackColor = true;
             this.chkX.CheckedChanged += new System.EventHandler(this.chkAnyButton_CheckChanged);
-            this.chkX.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_DoubleClick);
+            this.chkX.Leave += new System.EventHandler(this.chkAny_Leave);
+            this.chkX.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseDown);
+            this.chkX.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseUp);
             this.chkX.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Control_PreviewKeyDown);
             // 
             // chkUp
@@ -613,7 +611,9 @@
             this.chkUp.Text = "^";
             this.chkUp.UseVisualStyleBackColor = true;
             this.chkUp.CheckedChanged += new System.EventHandler(this.chkAnyButton_CheckChanged);
-            this.chkUp.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_DoubleClick);
+            this.chkUp.Leave += new System.EventHandler(this.chkAny_Leave);
+            this.chkUp.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseDown);
+            this.chkUp.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseUp);
             this.chkUp.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Control_PreviewKeyDown);
             // 
             // chkDown
@@ -627,7 +627,9 @@
             this.chkDown.Text = "v";
             this.chkDown.UseVisualStyleBackColor = true;
             this.chkDown.CheckedChanged += new System.EventHandler(this.chkAnyButton_CheckChanged);
-            this.chkDown.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_DoubleClick);
+            this.chkDown.Leave += new System.EventHandler(this.chkAny_Leave);
+            this.chkDown.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseDown);
+            this.chkDown.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseUp);
             this.chkDown.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Control_PreviewKeyDown);
             // 
             // chkA
@@ -641,7 +643,9 @@
             this.chkA.Text = "A";
             this.chkA.UseVisualStyleBackColor = true;
             this.chkA.CheckedChanged += new System.EventHandler(this.chkAnyButton_CheckChanged);
-            this.chkA.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_DoubleClick);
+            this.chkA.Leave += new System.EventHandler(this.chkAny_Leave);
+            this.chkA.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseDown);
+            this.chkA.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseUp);
             this.chkA.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Control_PreviewKeyDown);
             // 
             // chkB
@@ -655,7 +659,9 @@
             this.chkB.Text = "B";
             this.chkB.UseVisualStyleBackColor = true;
             this.chkB.CheckedChanged += new System.EventHandler(this.chkAnyButton_CheckChanged);
-            this.chkB.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_DoubleClick);
+            this.chkB.Leave += new System.EventHandler(this.chkAny_Leave);
+            this.chkB.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseDown);
+            this.chkB.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseUp);
             this.chkB.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Control_PreviewKeyDown);
             // 
             // chkRight
@@ -669,7 +675,9 @@
             this.chkRight.Text = ">";
             this.chkRight.UseVisualStyleBackColor = true;
             this.chkRight.CheckedChanged += new System.EventHandler(this.chkAnyButton_CheckChanged);
-            this.chkRight.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_DoubleClick);
+            this.chkRight.Leave += new System.EventHandler(this.chkAny_Leave);
+            this.chkRight.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseDown);
+            this.chkRight.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseUp);
             this.chkRight.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Control_PreviewKeyDown);
             // 
             // chkLeft
@@ -683,7 +691,9 @@
             this.chkLeft.Text = "<";
             this.chkLeft.UseVisualStyleBackColor = true;
             this.chkLeft.CheckedChanged += new System.EventHandler(this.chkAnyButton_CheckChanged);
-            this.chkLeft.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_DoubleClick);
+            this.chkLeft.Leave += new System.EventHandler(this.chkAny_Leave);
+            this.chkLeft.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseDown);
+            this.chkLeft.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseUp);
             this.chkLeft.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Control_PreviewKeyDown);
             // 
             // chkY
@@ -697,7 +707,9 @@
             this.chkY.Text = "Y";
             this.chkY.UseVisualStyleBackColor = true;
             this.chkY.CheckedChanged += new System.EventHandler(this.chkAnyButton_CheckChanged);
-            this.chkY.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_DoubleClick);
+            this.chkY.Leave += new System.EventHandler(this.chkAny_Leave);
+            this.chkY.MouseDown += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseDown);
+            this.chkY.MouseUp += new System.Windows.Forms.MouseEventHandler(this.chkAnyCheckBox_MouseUp);
             this.chkY.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Control_PreviewKeyDown);
             // 
             // label7
@@ -778,6 +790,7 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
+            this.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseWheel);
             this.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.Control_PreviewKeyDown);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -845,12 +858,11 @@
         private System.Windows.Forms.Button btnSetCurrent;
         private System.Windows.Forms.Label lblInst;
         private System.Windows.Forms.NumericUpDown numInst;
-        private System.Windows.Forms.RadioButton rdoVerHD;
-        private System.Windows.Forms.RadioButton rdoVer9;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.Button helpBtn;
         private System.Windows.Forms.Label lblReRecords;
 		private System.Windows.Forms.Label lblDesync;
+        private System.Windows.Forms.ComboBox cbxVersion;
     }
 }
 

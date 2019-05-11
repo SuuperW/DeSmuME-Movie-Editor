@@ -35,6 +35,7 @@ namespace DeSmuMe_Movie_Editor
         {
             checks = new CheckBox[] { chkg, chkR, chkL, chkX, chkY, chkA, chkB, chkStart, chkSelect, chkUp, chkDown, chkLeft, chkRight };
             lblDesync.Text = "";
+            numViewFrame.MouseWheel += numViewFrame_MouseWheel;
         }
         // Load Movie
         private void btnLoadMovie_Click(object sender, EventArgs e)
@@ -47,8 +48,13 @@ namespace DeSmuMe_Movie_Editor
                 mov.Dispose();
             }
 
+            string version = "9";
+            if (cbxVersion.SelectedIndex == 1)
+                version = "432";
+            else if (cbxVersion.SelectedIndex == 2)
+                version = "p";
             mov = new MovieEditor();
-            if (mov.GetMovie(rdoVer9.Checked ? 9 : 432, (int)numInst.Value - 1) != 0)
+            if (mov.GetMovie(version, (int)numInst.Value - 1) != 0)
                 return;
 
             mov.DesyncDetected += DesyncDetect;
@@ -81,8 +87,7 @@ namespace DeSmuMe_Movie_Editor
             // Hide video find things
             lblInst.Visible = false;
             numInst.Visible = false;
-            rdoVerHD.Visible = false;
-            rdoVer9.Visible = false;
+            cbxVersion.Visible = false;
             btnLoadMovie.Text = "Refind";
 
             // Check for autosaved movie
@@ -107,6 +112,8 @@ namespace DeSmuMe_Movie_Editor
                             lblDesync.Text = "";
                         loadedMovie = true;
                     }
+                    else
+                        File.Delete(GetAutoSaveMoviePath());
                 }
 
                 // Are there partials to load?
@@ -120,13 +127,19 @@ namespace DeSmuMe_Movie_Editor
                         p.LoadAutoSavedZones();
                         p.Show();
                     }
+                    else
+                    {
+                        FileInfo[] files = autoSaveDirectory.GetFiles();
+                        for (int i = 0; i < files.Length; i++)
+                            File.Delete(files[i].FullName);
+                    }
                 }
             }
         }
         // Change view frame
         private void numViewFrame_ValueChanged(object sender, EventArgs e)
         {
-            justClicked = false;
+            inhibitDoubleClick = true;
             if (AutoChange) return;
             AutoChange = true;
 
@@ -138,6 +151,9 @@ namespace DeSmuMe_Movie_Editor
 
             // lblAddress.Text = Convert.ToString(mov.memoryStart + (int)numFrame.Value * 12, 16);
             AutoChange = false;
+
+            if (heldButton.button != null)
+                heldButton.button.Checked = heldButton.on;
         }
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
@@ -269,24 +285,64 @@ namespace DeSmuMe_Movie_Editor
         {
             MessageBox.Show("Double-click a check box (or 'Touch Screen:') to toggle. Red means don't change.");
         }
-        bool justClicked = false;
-        private void chkAnyCheckBox_DoubleClick(object sender, MouseEventArgs e)
-        {
-            if (!justClicked)
+        bool inhibitDoubleClick = false;
+        struct HoldButton {
+            public CheckBox button;
+            public bool on;
+            public bool scrolled;
+
+            public HoldButton(CheckBox button, bool on)
             {
-                justClicked = true;
-                return;
+                this.button = button;
+                this.on = on;
+                scrolled = false;
+            }
+        };
+        HoldButton heldButton;
+        private void chkAnyCheckBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            bool allowDouble = true;
+            if (inhibitDoubleClick)
+            {
+                inhibitDoubleClick = false;
+                allowDouble = false;
             }
 
-            justClicked = true;
-            if (e.Clicks != 2) return;
+            if (e.Clicks >= 2) // double click
+            {
+                if (allowDouble)
+                {
+                    Control s = (Control)sender;
 
-            Control s = (Control)sender;
-
-            if (s.ForeColor == Color.Red)
-                s.ForeColor = Color.Black;
-            else
-                s.ForeColor = Color.Red;
+                    if (s.ForeColor == Color.Red)
+                        s.ForeColor = Color.Black;
+                    else
+                        s.ForeColor = Color.Red;
+                }
+            }
+            else // click and hold + scroll
+            {
+                CheckBox s = sender as CheckBox;
+                heldButton = new HoldButton(s, !s.Checked);
+            }
+        }
+        private void FlipHeldButton()
+        {
+            if (heldButton.button != null)
+            {
+                heldButton.scrolled = true;
+                heldButton.button.Checked = !heldButton.button.Checked;
+            }
+        }
+        private void chkAnyCheckBox_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (heldButton.scrolled)
+                FlipHeldButton();
+            heldButton = new HoldButton();
+        }
+        private void chkAny_Leave(object sender, EventArgs e)
+        {
+            heldButton = new HoldButton();
         }
         private void btnSetNextTo_Click(object sender, EventArgs e)
         {
@@ -504,6 +560,35 @@ namespace DeSmuMe_Movie_Editor
             }
         }
 
-
+        private void Form1_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if (mov != null)
+            {
+                if (!heldButton.scrolled) FlipHeldButton();
+                numViewFrame.Value += e.Delta / 120;
+            }
+        }
+        private void numViewFrame_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if (mov != null)
+            {
+                if (!heldButton.scrolled) FlipHeldButton();
+                if (e.Delta > 0)
+                {
+                    if (numViewFrame.Value + 1 > numViewFrame.Maximum)
+                        numViewFrame.Value = numViewFrame.Maximum;
+                    else
+                        numViewFrame.Value++;
+                }
+                else if (e.Delta < 0)
+                {
+                    if (numViewFrame.Value - 1 < numViewFrame.Minimum)
+                        numViewFrame.Value = numViewFrame.Minimum;
+                    else
+                        numViewFrame.Value--;
+                }
+            }
+            (e as HandledMouseEventArgs).Handled = true;
+        }
     }
 }

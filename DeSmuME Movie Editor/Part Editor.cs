@@ -40,10 +40,13 @@ namespace DeSmuMe_Movie_Editor
             z.bytes = mov.GetPSave(z.start, z.start + z.length);
             z.name = "Zone " + zones.Count;
 
-            zones.Add(z);
-            listZones.Items.Add(z.name + " - length: " + z.length);
+            if (z.bytes != null)
+            {
+                zones.Add(z);
+                listZones.Items.Add(z.name + " - length: " + z.length);
 
-            AutoSaveZone(z);
+                AutoSaveZone(z);
+            }
         }
 
         // Select a zone
@@ -158,6 +161,8 @@ namespace DeSmuMe_Movie_Editor
 
             zones.Add(z);
             listZones.Items.Add(z.getStr());
+
+            AutoSaveZone(z);
         }
         // Auto save
         static int autoSaveID = 0;
@@ -182,12 +187,7 @@ namespace DeSmuMe_Movie_Editor
             for (int i = 0; i < files.Length; i++)
             {
                 if (files[i].Name.Contains(".pmf"))
-                {
                     LoadZone(files[i].FullName);
-                    File.Move(files[i].FullName, GetAutoSavePath() + autoSaveID + ".pmf");
-                    zoneSaveIDs.Add(autoSaveID);
-                    autoSaveID++;
-                }
             }
         }
 
