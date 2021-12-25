@@ -16,39 +16,16 @@ namespace DeSmuMe_Movie_Editor
 		}
 
 		MemoryHacker Mem;
-		public int GetMovie(string ver, int inst)
+		public int GetMovie(DsmVersionInfo ver, int inst)
 		{
             // Set up the memory hacker
             Process[] emus = null;
-            if (ver == "9")
+            emus = Process.GetProcessesByName(ver.processName);
+            _cfPtr = ver.currentFramePtr;
+            if (emus.Length == 0)
             {
-                emus = Process.GetProcessesByName("DeSmuME_0.9.9_x86");
-                _cfPtr = 0x4FF5368;
-                if (emus.Length == 0)
-                {
-                    MessageBox.Show("Error: Could not find DeSmuMe_0.9.9_x86. Please open the program, start a movie, and try again.");
-                    return 1;
-                }
-            }
-            else if (ver == "432")
-			{
-                emus = Process.GetProcessesByName("DeSmuME_X432R_AVI_x86");
-                _cfPtr = 0x4CF35FC;
-				if (emus.Length == 0)
-				{
-                    MessageBox.Show("Could not find DeSmuME_X432R_AVI_x86. Please open the program, start a movie, and try again.");
-					return 1;
-				}
-			}
-            else if (ver == "p")
-            {
-                string processName = "DeSmuME_13102018"; // DeSmuME_13102018 DeSmuME-VS2017-x64-Release
-                emus = Process.GetProcessesByName(processName);
-                if (emus.Length == 0)
-                {
-                    MessageBox.Show("Could not find " + processName + ". Please open the program, start a movie, and try again.");
-                    return 1;
-                }
+                MessageBox.Show(string.Format("Error: Could not find {0}. Please open the program, start a movie, and try again.", ver.processName));
+                return 1;
             }
 
             int pID = inst;
@@ -60,22 +37,26 @@ namespace DeSmuMe_Movie_Editor
 			}
 
 			Mem = new MemoryHacker(emus[pID]);
-            if (ver == "p")
+            if (ver.name == "p")
             {
-                _cfPtr =    ReadLong(0x148db4a80) - (long)Mem.TargetProcess.MainModule.BaseAddress;
-                _moviePtr = ReadLong(0x148db4ca8);
+				// I made a custom build that recorded and printed out some addresses for me.
+				// So this code is different from how other versions are handled.
+				// I don't understand why I made these decisions.
+
+				_cfPtr = ReadLong(ver.currentFramePtr) - (long)Mem.TargetProcess.MainModule.BaseAddress;
+				_moviePtr = ReadLong(ver.movieRecordsPtr);
             }
             else
             {
-                // Find the address of the movie
-                IntPtr baseAddress = Mem.TargetProcess.MainModule.BaseAddress;
-                int MoviePointer = ReadInteger((long)baseAddress + 0x161240);
-                if (ver == "432")
-                    MoviePointer = (int)baseAddress + 0x70931D8;
-                // End is offset +0x10
-                _memEPtr = MoviePointer + 0x10;
-                // Start is offset +0xC
-                _memSPtr = MoviePointer + 0xC;
+				// Find the address of the movie
+				{
+					IntPtr baseAddress = Mem.TargetProcess.MainModule.BaseAddress;
+					int MoviePointer = ReadInteger((long)baseAddress + 0x161240);
+					// End is offset +0x10
+					_memEPtr = MoviePointer + 0x10;
+					// Start is offset +0xC
+					_memSPtr = MoviePointer + 0xC;
+				}
             }
 
             if (recordsStart == 0)

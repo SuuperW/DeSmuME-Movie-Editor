@@ -29,6 +29,15 @@ namespace DeSmuMe_Movie_Editor
         private int ViewFrame
         { get { return (int)numViewFrame.Value; } }
 
+        DsmVersionInfo[] versions = new DsmVersionInfo[]
+        {
+            new DsmVersionInfo() { is_x64 = false, name = "0.9.9", processName = "DeSmuME_0.9.9_x86",
+                currentFramePtr = 0x4FF5368, movieRecordsPtr = 0x561240 },
+            new DsmVersionInfo() { is_x64 = true, name = "personal", processName = "DeSmuME_13102018",
+                currentFramePtr = 0x148db4a80, movieRecordsPtr = 0x148db4ca8 }
+
+        };
+
         // New interface
         CheckBox[] checks;
         private void Form1_Load(object sender, EventArgs e)
@@ -48,13 +57,8 @@ namespace DeSmuMe_Movie_Editor
                 mov.Dispose();
             }
 
-            string version = "9";
-            if (cbxVersion.SelectedIndex == 1)
-                version = "432";
-            else if (cbxVersion.SelectedIndex == 2)
-                version = "p";
             mov = new MovieEditor();
-            if (mov.GetMovie(version, (int)numInst.Value - 1) != 0)
+            if (mov.GetMovie(versions[cbxVersion.SelectedIndex], (int)numInst.Value - 1) != 0)
                 return;
 
             mov.DesyncDetected += DesyncDetect;
