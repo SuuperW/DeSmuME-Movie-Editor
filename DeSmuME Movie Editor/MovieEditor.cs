@@ -43,7 +43,7 @@ namespace DeSmuMe_Movie_Editor
 				// So this code is different from how other versions are handled.
 				// I don't understand why I made these decisions.
 
-				_cfPtr = ReadLong(ver.currentFramePtr) - (long)Mem.TargetProcess.MainModule.BaseAddress;
+				_cfPtr = ReadLong(ver.currentFramePtr);
 				_moviePtr = ReadLong(ver.movieRecordsPtr);
             }
             else
@@ -210,8 +210,8 @@ namespace DeSmuMe_Movie_Editor
 		{
 			// v10: 4FF4808, v11: 0x4FAA208
 			// v9: 4FF5368
-			get { return ReadInteger(_cfPtr + (long)Mem.TargetProcess.MainModule.BaseAddress); }
-			set { WriteInteger(_cfPtr + (int)Mem.TargetProcess.MainModule.BaseAddress, value); }
+			get { return ReadInteger(_cfPtr); }
+			set { WriteInteger(_cfPtr, value); }
 		}
 
         long _moviePtr = 0;
