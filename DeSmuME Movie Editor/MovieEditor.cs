@@ -42,7 +42,7 @@ namespace DeSmuMe_Movie_Editor
 
             // Set up the memory hacker
 			Mem = new MemoryHacker(emus[inst]);
-            if (ver.name == "p")
+            if (ver.name == "personal")
             {
 				// I made a custom build that recorded and printed out some addresses for me.
 				// So this code is different from how other versions are handled.
