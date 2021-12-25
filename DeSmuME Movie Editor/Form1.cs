@@ -32,7 +32,7 @@ namespace DeSmuMe_Movie_Editor
         DsmVersionInfo[] versions = new DsmVersionInfo[]
         {
             new DsmVersionInfo() { is_x64 = false, name = "0.9.9", processName = "DeSmuME_0.9.9_x86",
-                currentFramePtr = 0x53F5368, movieRecordsPtr = 0x561240 },
+                currentFramePtr = 0x53F5368, movieRecordsPtr = 0x63202E8 },
             new DsmVersionInfo() { is_x64 = true, name = "personal", processName = "DeSmuME_13102018",
                 currentFramePtr = 0x148db4a80, movieRecordsPtr = 0x148db4ca8 }
 

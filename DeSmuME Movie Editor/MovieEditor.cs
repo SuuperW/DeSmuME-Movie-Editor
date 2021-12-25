@@ -9,6 +9,8 @@ namespace DeSmuMe_Movie_Editor
 {
 	public class MovieEditor : IDisposable
 	{
+		private bool is_x64;
+
 		public MovieEditor()
 		{
 			FrameEdited += FrameEditM;
@@ -18,25 +20,28 @@ namespace DeSmuMe_Movie_Editor
 		MemoryHacker Mem;
 		public int GetMovie(DsmVersionInfo ver, int inst)
 		{
-            // Set up the memory hacker
+			// Get the process
             Process[] emus = null;
             emus = Process.GetProcessesByName(ver.processName);
-            _cfPtr = ver.currentFramePtr;
             if (emus.Length == 0)
             {
                 MessageBox.Show(string.Format("Error: Could not find {0}. Please open the program, start a movie, and try again.", ver.processName));
                 return 1;
             }
-
-            int pID = inst;
-			if (pID >= emus.Length)
+			else if (inst >= emus.Length)
 			{
 				MessageBox.Show("You selected instance #" + (inst + 1) + ". There are only " + emus.Length + " instances.");
 				Mem = null;
 				return 2;
 			}
 
-			Mem = new MemoryHacker(emus[pID]);
+			// Setup by version
+			is_x64 = ver.is_x64;
+			_cfPtr = ver.currentFramePtr;
+			_moviePtr = ver.movieRecordsPtr;
+
+            // Set up the memory hacker
+			Mem = new MemoryHacker(emus[inst]);
             if (ver.name == "p")
             {
 				// I made a custom build that recorded and printed out some addresses for me.
@@ -44,23 +49,13 @@ namespace DeSmuMe_Movie_Editor
 				// I don't understand why I made these decisions.
 
 				_cfPtr = ReadLong(ver.currentFramePtr);
-				_moviePtr = ReadLong(ver.movieRecordsPtr);
+				// this pointer actually points to a MovieData struct, hence the +0x70
+				_moviePtr = ReadLong(ver.movieRecordsPtr) + 0x70;
             }
-            else
-            {
-				// Find the address of the movie
-				{
-					IntPtr baseAddress = Mem.TargetProcess.MainModule.BaseAddress;
-					int MoviePointer = ReadInteger((long)baseAddress + 0x161240);
-					// End is offset +0x10
-					_memEPtr = MoviePointer + 0x10;
-					// Start is offset +0xC
-					_memSPtr = MoviePointer + 0xC;
-				}
-            }
-
+			
+			// If no movie is playing, complain
             if (recordsStart == 0)
-            { // If no movie is playing, complain
+            { 
                 MessageBox.Show("The selected instance is not playing a movie.");
                 return 3;
             }
@@ -208,8 +203,6 @@ namespace DeSmuMe_Movie_Editor
 		long _cfPtr;
 		public int CurrentFrame
 		{
-			// v10: 4FF4808, v11: 0x4FAA208
-			// v9: 4FF5368
 			get { return ReadInteger(_cfPtr); }
 			set { WriteInteger(_cfPtr, value); }
 		}
@@ -223,45 +216,39 @@ namespace DeSmuMe_Movie_Editor
 		public int MaxMovieLength
 		{
             get {
-                if (_moviePtr == 0)
-                    return (int)(ReadLong(_memEPtr + 4) - recordsStart) / 12;
+				// _moviePtr: beginPtr, endPtr, capacityEndPtr
+				long capacityEndPtr;
+				if (is_x64) capacityEndPtr = ReadLong(_moviePtr + 0x10);
+				else        capacityEndPtr = ReadInteger(_moviePtr + 0x8);
+
+				if (capacityEndPtr == 0)
+                    return 0;
                 else
-                {
-                    // movieData.records offset is 0x70, beginPtr, endPtr, capacityEndPtr
-                    long capacityEndPtr = ReadLong(_moviePtr + 0x80);
-                    if (capacityEndPtr == 0)
-                        return 0;
-                    else
-                        return (int)(capacityEndPtr - recordsStart) / 12;
-                }
+                    return (int)(capacityEndPtr - recordsStart) / 12;
             }
         }
 
-		int _memSPtr;
+		// _moviePtr: beginPtr, endPtr, capacityEndPtr
 		long recordsStart
 		{
-			get {
-                if (_moviePtr == 0)
-                    return ReadInteger(_memSPtr);
-                else // movieData.records offset is 0x70, beginPtr, endPtr, capacityEndPtr
-                    return ReadLong(_moviePtr + 0x70);
-            }
+			get
+			{
+				if (is_x64) return ReadLong(_moviePtr);
+				else        return ReadInteger(_moviePtr);
+			}
         }
-		int _memEPtr;
 		long recordsEnd
 		{
-			get {
-                if (_moviePtr == 0)
-                    return ReadInteger(_memEPtr);
-                else // movieData.records offset is 0x70, beginPtr, endPtr, capacityEndPtr
-                    return ReadLong(_moviePtr + 0x78);
-            }
-			set {
-                if (_moviePtr == 0)
-                    WriteLong(_memEPtr, value);
-                else
-                    WriteLong(_moviePtr + 0x78, value);
-            }
+			get
+			{
+				if (is_x64) return ReadLong(_moviePtr + 0x8);
+				else        return ReadInteger(_moviePtr + 0x4);
+			}
+			set
+			{
+				if (is_x64) WriteLong(_moviePtr + 0x8, value);
+				else        WriteInteger(_moviePtr + 0x4, (int)value);
+			}
 		}
 
 		// Copy and paste
