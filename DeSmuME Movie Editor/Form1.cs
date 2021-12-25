@@ -31,12 +31,14 @@ namespace DeSmuMe_Movie_Editor
 
         DsmVersionInfo[] versions = new DsmVersionInfo[]
         {
+			new DsmVersionInfo() { is_x64 = true, name = "b4080b2", processName = "DeSmuME_b4080b2", // DeSmuME_b4080b2, DeSmuME-VS2019-x64-Release
+				currentFramePtr = 0x1484EA3BC, movieRecordsPtr = 0x14CB6DB70 },
             new DsmVersionInfo() { is_x64 = false, name = "0.9.9", processName = "DeSmuME_0.9.9_x86",
                 currentFramePtr = 0x53F5368, movieRecordsPtr = 0x63202E8 },
-            new DsmVersionInfo() { is_x64 = true, name = "personal", processName = "DeSmuME_13102018",
-                currentFramePtr = 0x148db4a80, movieRecordsPtr = 0x148db4ca8 }
+			new DsmVersionInfo() { is_x64 = true, name = "personal", processName = "DeSmuME_13102018",
+				currentFramePtr = 0x148DB4A80, movieRecordsPtr = 0x148DB4CA8 }
 
-        };
+		};
 
         // New interface
         CheckBox[] checks;
@@ -45,6 +47,10 @@ namespace DeSmuMe_Movie_Editor
             checks = new CheckBox[] { chkg, chkR, chkL, chkX, chkY, chkA, chkB, chkStart, chkSelect, chkUp, chkDown, chkLeft, chkRight };
             lblDesync.Text = "";
             numViewFrame.MouseWheel += numViewFrame_MouseWheel;
+
+			foreach (var v in versions)
+				cbxVersion.Items.Add(v.name);
+			cbxVersion.SelectedIndex = 0;
         }
         // Load Movie
         private void btnLoadMovie_Click(object sender, EventArgs e)

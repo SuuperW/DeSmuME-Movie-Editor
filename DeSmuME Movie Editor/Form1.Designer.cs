@@ -141,9 +141,6 @@
 			// 
 			this.cbxVersion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cbxVersion.FormattingEnabled = true;
-			this.cbxVersion.Items.AddRange(new object[] {
-            "9",
-            "personal"});
 			this.cbxVersion.Location = new System.Drawing.Point(126, 313);
 			this.cbxVersion.Name = "cbxVersion";
 			this.cbxVersion.Size = new System.Drawing.Size(75, 21);
